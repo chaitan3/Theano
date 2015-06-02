@@ -1708,11 +1708,48 @@ class GCC_compiler(Compiler):
                 # as stdin (which is the default) results in the process
                 # waiting forever without returning. For that reason,
                 # we use a pipe, and use the empty string as input.
-                (stdout, stderr) = p.communicate(input=b(''))
-                if p.returncode != 0:
-                    return None
+                #(stdout, stderr) = p.communicate(input=b(''))
+                #if p.returncode != 0:
+                #    return None
 
-                lines = BytesIO(stdout + stderr).readlines()
+		if 'native' not in cmd:
+		    lines = """ Using built-in specs.
+COLLECT_GCC=/opt/gcc/4.8.2/bin/../snos/bin/g++
+Target: x86_64-suse-linux
+Configured with: ../cray-gcc-4.8.2/configure --prefix=/opt/gcc/4.8.2/snos --disable-nls --libdir=/opt/gcc/4.8.2/snos/lib --enable-languages=c,c++,fortran --with-gxx-include-dir=/opt/gcc/4.8.2/snos/include/g++ --with-slibdir=/opt/gcc/4.8.2/snos/lib --with-system-zlib --enable-shared --enable-__cxa_atexit --build=x86_64-suse-linux --with-mpc=/opt/gcc/mpc/0.8.1 --with-mpfr=/opt/gcc/mpfr/2.4.2 --with-gmp=/opt/gcc/gmp/4.3.2
+Thread model: posix
+gcc version 4.8.2 20131016 (Cray Inc.) (GCC)
+COLLECT_GCC_OPTIONS='-E' '-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /opt/gcc/4.8.2/snos/libexec/gcc/x86_64-suse-linux/4.8.2/cc1 -E -quiet -v - -mtune=generic -march=x86-64
+ignoring nonexistent directory "/opt/gcc/4.8.2/snos/lib/gcc/x86_64-suse-linux/4.8.2/../../../../x86_64-suse-linux/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc/4.8.2/snos/lib/gcc/x86_64-suse-linux/4.8.2/include
+ /usr/local/include
+ /opt/gcc/4.8.2/snos/include
+ /opt/gcc/4.8.2/snos/lib/gcc/x86_64-suse-linux/4.8.2/include-fixed
+ /usr/include
+End of search list."""
+		else:
+		    lines =  """Using built-in specs.
+COLLECT_GCC=/opt/gcc/4.8.2/bin/../snos/bin/g++
+Target: x86_64-suse-linux
+Configured with: ../cray-gcc-4.8.2/configure --prefix=/opt/gcc/4.8.2/snos --disable-nls --libdir=/opt/gcc/4.8.2/snos/lib --enable-languages=c,c++,fortran --with-gxx-include-dir=/opt/gcc/4.8.2/snos/include/g++ --with-slibdir=/opt/gcc/4.8.2/snos/lib --with-system-zlib --enable-shared --enable-__cxa_atexit --build=x86_64-suse-linux --with-mpc=/opt/gcc/mpc/0.8.1 --with-mpfr=/opt/gcc/mpfr/2.4.2 --with-gmp=/opt/gcc/gmp/4.3.2
+Thread model: posix
+gcc version 4.8.2 20131016 (Cray Inc.) (GCC)
+COLLECT_GCC_OPTIONS='-march=native' '-E' '-v' '-shared-libgcc'
+ /opt/gcc/4.8.2/snos/libexec/gcc/x86_64-suse-linux/4.8.2/cc1 -E -quiet -v - -march=bdver1 -mcx16 -msahf -mno-movbe -maes -mpclmul -mpopcnt -mabm -mlwp -mno-fma -mfma4 -mxop -mno-bmi -mno-bmi2 -mno-tbm -mavx -mno-avx2 -msse4.2 -msse4.1 -mlzcnt -mno-rtm -mno-hle -mno-rdrnd -mno-f16c -mno-fsgsbase -mno-rdseed -mprfchw -mno-adx -mfxsr -mxsave -mno-xsaveopt --param l1-cache-size=16 --param l1-cache-line-size=64 --param l2-cache-size=2048 -mtune=bdver1
+ignoring nonexistent directory "/opt/gcc/4.8.2/snos/lib/gcc/x86_64-suse-linux/4.8.2/../../../../x86_64-suse-linux/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc/4.8.2/snos/lib/gcc/x86_64-suse-linux/4.8.2/include
+ /usr/local/include
+ /opt/gcc/4.8.2/snos/include
+ /opt/gcc/4.8.2/snos/lib/gcc/x86_64-suse-linux/4.8.2/include-fixed
+ /usr/include
+End of search list."""
+		#lines = BytesIO(stdout + stderr).readlines()
+                lines = BytesIO(lines).readlines()
                 lines = decode_iter(lines)
                 if parse:
                     selected_lines = []
